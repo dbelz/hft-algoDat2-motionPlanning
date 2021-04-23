@@ -1,3 +1,4 @@
+import numpy as np
 from PIL import Image, ImageTk, ImageColor
 from io import BytesIO
 from tkinter import ttk, Canvas, NW
@@ -18,10 +19,12 @@ class Workspace:
         # Load the environment bitmap and convert it to black and white
         # what makes it easier to work with
         self.envImage = Image.open(envImagePath).convert("1")
+        self.envArray = np.array(self.envImage)
         self.envPhoto = ImageTk.PhotoImage(self.envImage)
 
         # Load the robot bitmap and convert it to black and white also
         self.robotImage = Image.open(robotImagePath).convert("1")
+        self.robotArray = np.array(self.robotImage)
         self.robotPhoto = ImageTk.PhotoImage(self.robotImage)
 
         self.__findEdges()
