@@ -37,3 +37,6 @@ class Controller:
     
     def setSolutionPathOnCurrentPos(self, index):
         self.workspace.currentPos = self.configspace.solutionPath[index]
+        
+    def drawCSpace(self):
+        self.configspace.drawCSpace(self.workspace.envImage)

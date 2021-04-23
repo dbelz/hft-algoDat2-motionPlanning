@@ -44,6 +44,11 @@ def demo():
 
     slider = Scale(page1, from_=0, to=200, orient=HORIZONTAL, command=moveRobotOnPath)
     slider.config(length=600)
+
+    def drawCSpace():
+        controller.drawCSpace()
+    setDrawCSpaceButton = ttk.Button(page1, text = 'Draw C-Space', command = drawCSpace)
+    setDrawCSpaceButton.pack(side=tkinter.RIGHT)
     
     def set_goal():
         controller.setCurrentPosAsGoal()
@@ -57,6 +62,7 @@ def demo():
         controller.setCurrentPosAsInit()
     setInitButton = ttk.Button(page1, text = 'Set Init',command = set_init)
     setInitButton.pack(side=tkinter.RIGHT)
+
 
     slider.pack()
 
