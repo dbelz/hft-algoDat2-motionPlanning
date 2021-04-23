@@ -88,44 +88,7 @@ class Workspace:
     # -------------------------------------------------------------------------
     def isInCollision(self,x,y):
         # x and y are the coords of the top left pixel of the robot
-        print("--- isInCollision(" + str(x) + "," + str(y) + ")")
-
-        # To compare the runtime performance we run both collission detections
-        # after one another, but only the result of the improved CD is used.
-        self.__isInCollisionSequential(x, y)
-        rv = self.__isInCollisionWithEdges(x, y)
-
-        return rv
-
-    # -------------------------------------------------------------------------
-    def __isInCollisionSequential(self, x, y):
-
-        startTimeCheckSequential = time.time()
-
-        # Iterate over each pixel of the robot. Skip it if it is white.
-        # A black pixel means that this is a pixel of the robot and therefore
-        # we have to check for a possible collission. This is done by mapping
-        # the current robot pixel to the corresponding environment pixel. If
-        # both pixels are black, we have a collission. If the environment pixel
-        # is white, we are collission free (for the given pixel).
-        for robotX in range(self.robotImage.size[0]):
-            for robotY in range(self.robotImage.size[1]):
-                pixel = self.robotImage.getpixel((robotX, robotY))
-                if (not pixel):
-                    # Pixel of the robot is black, so we have to check for obstacles
-                    if (not self.envImage.getpixel((x + robotX, y + robotY))):
-                        # Pixel of the env image is also black, so we hit an obstacle here
-                        print("Duration of sequential check: ", str((time.time() - startTimeCheckSequential) * 1000), "ms")
-                        return True
-
-        print("Duration of sequential check: ", str((time.time() - startTimeCheckSequential) * 1000), "ms")
-        return False
-
-    # -------------------------------------------------------------------------
-    def __isInCollisionWithEdges(self, x, y):
-
-        startTime = time.time()
-
+        #print("--- isInCollision(" + str(x) + "," + str(y) + ")")
         # Improved collision detection: do not iterate over every pixel of the
         # robot bitmap but only over the edge pixels. The collision detection
         # is the same as above (edge pixel over a black pixel (obstacle) in
@@ -133,8 +96,6 @@ class Workspace:
         for pixel in self.robotEdgePixels:
             if (not self.envImage.getpixel( (x + pixel[0], y + pixel[1]) )):
                 # Pixel of the env image is black, so we hit an obstacle here
-                print("Duration of edges check: ", str((time.time() - startTime) * 1000), "ms")
                 return True
 
-        print("Duration of edges check: ", str((time.time() - startTime) * 1000), "ms")
         return False
