@@ -1,10 +1,12 @@
+import sys
 import numpy as np
 from PIL import Image, ImageTk, ImageColor
 from io import BytesIO
 from tkinter import ttk, Canvas, NW
 import os
 from configspace import Configspace
-import time
+from pprint import pprint as pp
+np.set_printoptions(suppress=True,linewidth=np.nan,threshold=sys.maxsize)
 
 # https://stackoverflow.com/questions/18943387/how-to-analyse-bitmap-image-in-python-using-pil
 # http://www.pythonclub.org/_media/modules/pil/pil.pdf
@@ -26,8 +28,12 @@ class Workspace:
         self.robotImage = Image.open(robotImagePath).convert("1")
         self.robotArray = np.array(self.robotImage)
         self.robotPhoto = ImageTk.PhotoImage(self.robotImage)
+        #pp(self.robotArray)
 
         self.__findEdges()
+        self.__defineCSpace()
+        
+        # TODO: How to display the C-Space?
 
         self.label = ttk.Label(root, image = self.envPhoto)
 
@@ -84,6 +90,13 @@ class Workspace:
                     #     - if pixel is black and y = height -> edge (bottom)
                     #     - if pixel is black and x = 1 -> edge (left)
                     #     - if pixel is black and x = width -> edge (right) 
+
+
+    # -------------------------------------------------------------------------
+    def __defineCSpace(self):
+        
+        
+            
 
     # -------------------------------------------------------------------------
     def isInCollision(self,x,y):
