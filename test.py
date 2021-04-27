@@ -1,12 +1,14 @@
 import sys
 import numpy as np
+from tkinter import ttk, Canvas, NW
+from PIL import Image, ImageTk, ImageColor
 from pprint import pprint as pp
 
 #np.set_printoptions(threshold=sys.maxsize)
 np.set_printoptions(suppress=True,linewidth=np.nan,threshold=sys.maxsize)
 
-x = np.arange(0, 32)
-y = np.arange(0, 32)
+x = np.arange(0, 64)
+y = np.arange(0, 64)
 arr = np.zeros((y.size, x.size))
 
 cx = 12.
@@ -30,3 +32,8 @@ pp(mask)
 arr[mask] = 1
 pp(arr)
 
+# envImage = Image.open("./resources/robot_BW_small.bmp").convert("1")
+# envArray = np.array(envImage)
+
+# arr[envArray] = 1
+# pp(arr)v

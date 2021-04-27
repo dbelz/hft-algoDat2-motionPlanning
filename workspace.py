@@ -5,11 +5,6 @@ from io import BytesIO
 from tkinter import ttk, Canvas, NW
 import os
 from configspace import Configspace
-from pprint import pprint as pp
-np.set_printoptions(suppress=True,linewidth=np.nan,threshold=sys.maxsize)
-
-# https://stackoverflow.com/questions/18943387/how-to-analyse-bitmap-image-in-python-using-pil
-# http://www.pythonclub.org/_media/modules/pil/pil.pdf
 
 class Workspace:
 
@@ -28,10 +23,9 @@ class Workspace:
         self.robotImage = Image.open(robotImagePath).convert("1")
         self.robotArray = np.array(self.robotImage)
         self.robotPhoto = ImageTk.PhotoImage(self.robotImage)
-        #pp(self.robotArray)
 
         self.__findEdges()
-        self.__defineCSpace()
+        self.__computeCSpace()
         
         # TODO: How to display the C-Space?
 
@@ -93,9 +87,25 @@ class Workspace:
 
 
     # -------------------------------------------------------------------------
-    def __defineCSpace(self):
-        
-        
+    def __computeCSpace(self):
+
+        for x in range(self.envArray.shape[0]):
+            for y in range(self.envArray.shape[1]):
+                pixel = self.envArray[x, y]
+                if (not pixel):
+                    # TODO: For solving motion planning problem with the
+                    # Minkowski Sum for non symmetric robots, the robot 
+                    # has to be mirrored to the origin --> HOW?
+                    # Mirrowed at what point? Because the robot is a circle,
+                    # we just ignore that here :-P
+                    
+                    # Use the NumPy array of the robot as mask.
+                    
+
+
+
+        # mask = (x[np.newaxis,:]-cx)**2 + (y[:,np.newaxis]-cy)**2 < r**2        
+
             
 
     # -------------------------------------------------------------------------
