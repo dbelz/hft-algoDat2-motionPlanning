@@ -24,8 +24,8 @@ class Workspace:
         self.robotArray = np.array(self.robotImage)
         self.robotPhoto = ImageTk.PhotoImage(self.robotImage)
 
-        self.__findEdges()
-        self.__computeCSpace()
+        self.__findEdges() # TODO: Refactor to return the edges and store them in self here
+        self.__computeCSpace() # TODO: Refactor to return the c-space and store it in self here
         
         # TODO: How to display the C-Space?
 
@@ -89,36 +89,53 @@ class Workspace:
     # -------------------------------------------------------------------------
     def __computeCSpace(self):
 
-        for x in range(self.envArray.shape[0]):
-            for y in range(self.envArray.shape[1]):
-                pixel = self.envArray[x, y]
-                if (not pixel):
+        print("--- Computing configuration space...")
+        print("     + c-space width: ", self.envArray.shape[1])
+        print("     + c-space height: ", self.envArray.shape[0])
+
+        self.configSpace = np.empty((self.envArray.shape[0], self.envArray.shape[1]))
+        self.configSpace.fill(255)
+
+        roboOffsetY = self.robotArray.shape[0] / 2
+        roboOffsetX = self.robotArray.shape[1] / 2
+        
+        for x in range(self.envArray.shape[1]):
+            for y in range(self.envArray.shape[0]):
+                if (not self.envArray[y, x]):
+                    
                     # TODO: For solving motion planning problem with the
                     # Minkowski Sum for non symmetric robots, the robot 
                     # has to be mirrored to the origin --> HOW?
                     # Mirrowed at what point? Because the robot is a circle,
                     # we just ignore that here :-P
                     
-                    # Use the NumPy array of the robot as mask.
-                    
+                    for roboPixel in self.robotEdgePixels: # no NumPy array, so x and y are in "normal" order!
+                        cy = int(y - roboOffsetY + roboPixel[1])
+                        cx = int(x - roboOffsetX + roboPixel[0])
+                        
+                        if (cx < 0 or cx >= self.envArray.shape[1] or cy < 0 or cy >= self.envArray.shape[0]):
+                            continue
+                        
+                        self.configSpace[cy, cx] = 0
+                        
+        print("--- FINISHED computing configuration space")
 
-
-
-        # mask = (x[np.newaxis,:]-cx)**2 + (y[:,np.newaxis]-cy)**2 < r**2        
-
-            
+    # -------------------------------------------------------------------------
+    def displayCSpace(self):
+        Image.fromarray(self.configSpace.astype(np.uint8)).show(title="Mask test")
 
     # -------------------------------------------------------------------------
     def isInCollision(self,x,y):
-        # x and y are the coords of the top left pixel of the robot
-        #print("--- isInCollision(" + str(x) + "," + str(y) + ")")
-        # Improved collision detection: do not iterate over every pixel of the
-        # robot bitmap but only over the edge pixels. The collision detection
-        # is the same as above (edge pixel over a black pixel (obstacle) in
-        # the environment is a collision).
-        for pixel in self.robotEdgePixels:
-            if (not self.envImage.getpixel( (x + pixel[0], y + pixel[1]) )):
-                # Pixel of the env image is black, so we hit an obstacle here
-                return True
-
+        
+        # WTF haben wir einen Offset drin?
+        # Das linke obere Pixel ist -24,24 auf dem Canvas und nicht wie erwartet 0,0!!! ヽ(ಠ_ಠ)ノ
+        
+        # TODO: Woher bekomme ich den Offset im Programm am besten?
+        
+        print("--- Checking for collision at x: ", x+24, ", y: ", y+24)
+        print("     + value in c-space: ", self.configSpace[y+24, x+24])
+        
+        if (not self.configSpace[y, x]):
+            return True      
+        
         return False
