@@ -7,6 +7,34 @@ from PIL import ImageTk, Image
 import os
 from utils import setBackgroundColor
 
+"""
+--> https://pep8.org/
+--> https://docs.python-guide.org/writing/style/
+--> https://github.com/hblanks/zen-of-python-by-example/blob/master/pep20_by_example.py
+
+
+The Zen of Python, by Tim Peters
+---------------------------------
+Beautiful is better than ugly.
+Explicit is better than implicit.
+Simple is better than complex.
+Complex is better than complicated.
+Flat is better than nested.
+Sparse is better than dense.
+Readability counts.
+Special cases aren't special enough to break the rules.
+Although practicality beats purity.
+Errors should never pass silently.
+Unless explicitly silenced.
+In the face of ambiguity, refuse the temptation to guess.
+There should be one-- and preferably only one --obvious way to do it.
+Although that way may not be obvious at first unless you're Dutch.
+Now is better than never.
+Although never is often better than *right* now.
+If the implementation is hard to explain, it's a bad idea.
+If the implementation is easy to explain, it may be a good idea.
+Namespaces are one honking great idea -- let's do more of those!
+"""
 
 def demo():
     root = tkinter.Tk()
@@ -45,9 +73,9 @@ def demo():
     slider = Scale(page1, from_=0, to=200, orient=HORIZONTAL, command=moveRobotOnPath)
     slider.config(length=600)
 
-    def displayCSpace():
-        controller.displayCSpace()
-    setDrawCSpaceButton = ttk.Button(page1, text = 'Display C-Space', command = displayCSpace)
+    def display_c_space():
+        controller.display_c_space()
+    setDrawCSpaceButton = ttk.Button(page1, text = 'Display C-Space', command = display_c_space)
     setDrawCSpaceButton.pack(side=tkinter.RIGHT)
     
     def set_goal():

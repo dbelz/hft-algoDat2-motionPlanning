@@ -62,21 +62,3 @@ class Configspace:
             newY = self.initConfig[1] + deltaY
             self.solutionPath.append((newX, newY))
         self.solutionPath.append(self.goalConfig)
-
-
-    # -------------------------------------------------------------------------
-    def drawCSpace(self, envImage):
-          
-          # Radius of the robot
-          r = 24
-              
-          print("Starting to draw C-space...")
-          for x in range(envImage.size[0]):
-            for y in range(envImage.size[1]):
-                pixel = envImage.getpixel((x, y))
-                if (not pixel):
-                  # Pixel is black -> obstacles -> draw Minkowski Sum
-                  #self.canvas.create_oval(self.off(x - r), self.off(y -r), self.off(x + r), self.off(y + r), fill='red', outline='')
-                  self.canvas.create_oval(x - r, y -r, x + r, y + r, fill='red', outline='')
-          print("DONE printing C-space")
-

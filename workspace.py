@@ -24,8 +24,8 @@ class Workspace:
         self.robotArray = np.array(self.robotImage)
         self.robotPhoto = ImageTk.PhotoImage(self.robotImage)
 
-        self.__findEdges() # TODO: Refactor to return the edges and store them in self here
-        self.__computeCSpace() # TODO: Refactor to return the c-space and store it in self here
+        self._find_edges() # TODO: Refactor to return the edges and store them in self here
+        self._compute_c_pace() # TODO: Refactor to return the c-space and store it in self here
         
         # TODO: How to display the C-Space?
 
@@ -47,7 +47,7 @@ class Workspace:
         self.label.pack(side = "bottom", fill = "both", expand = "yes")
 
     # -------------------------------------------------------------------------
-    def __findEdges(self):
+    def _find_edges(self):
         
         self.robotEdgePixels = []
         
@@ -87,48 +87,51 @@ class Workspace:
 
 
     # -------------------------------------------------------------------------
-    def __computeCSpace(self):
+    def _compute_c_space(self):
 
         print("--- Computing configuration space...")
         print("     + c-space width: ", self.envArray.shape[1])
         print("     + c-space height: ", self.envArray.shape[0])
 
-        self.configSpace = np.empty((self.envArray.shape[0], self.envArray.shape[1]))
-        self.configSpace.fill(255)
+        self.config_space = np.empty((self.envArray.shape[0], self.envArray.shape[1]))
+        self.config_space.fill(255)
 
-        roboOffsetY = round(0.5 * self.robotArray.shape[0])
-        roboOffsetX = round(0.5 * self.robotArray.shape[1])
+        robo_offset_y = round(0.5 * self.robotArray.shape[0])
+        robo_offset_x = round(0.5 * self.robotArray.shape[1])
         
+        # TODO: For every width/100 pixels update some progress information on the screen
         for x in range(self.envArray.shape[1]):
             for y in range(self.envArray.shape[0]):
                 if (not self.envArray[y, x]):
                     
                     # TODO: For solving motion planning problem with the
                     # Minkowski Sum for non symmetric robots, the robot 
-                    # has to be mirrored to the origin --> HOW?
-                    # Mirrowed at what point? Because the robot is a circle,
-                    # we just ignore that here :-P
+                    # has to be mirrored to the origin
+                    # Punktspiegelung um den Ursprung entspricht einer
+                    # Rotation um 180 Grad um den Ursprung. 
+                    # As origin, here the center of the circle was chosen,
+                    # so the mirrored robot is identical to the original robot :)
                     
                     for roboPixel in self.robotEdgePixels: # no NumPy array, so x and y are in "normal" order!
-                        cy = int(y - roboOffsetY + roboPixel[1])
-                        cx = int(x - roboOffsetX + roboPixel[0])
+                        cy = int(y - robo_offset_y + roboPixel[1])
+                        cx = int(x - robo_offset_x + roboPixel[0])
                         
                         if (cx < 0 or cx >= self.envArray.shape[1] or cy < 0 or cy >= self.envArray.shape[0]):
                             continue
                         
-                        self.configSpace[cy, cx] = 0
+                        self.config_space[cy, cx] = 0
                         
         print("--- FINISHED computing configuration space")
 
     # -------------------------------------------------------------------------
-    def displayCSpace(self):
+    def display_c_space(self):
         
-        Image.fromarray(self.configSpace.astype(np.uint8)).show(title="Mask test")
+        Image.fromarray(self.config_space.astype(np.uint8)).show(title="Mask test")
 
     # -------------------------------------------------------------------------
     def isInCollision(self,x,y):
         
-        if (not self.configSpace[y, x]):
+        if (not self.config_space[y, x]):
             return True      
         
         return False
