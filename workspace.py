@@ -96,8 +96,8 @@ class Workspace:
         self.configSpace = np.empty((self.envArray.shape[0], self.envArray.shape[1]))
         self.configSpace.fill(255)
 
-        roboOffsetY = self.robotArray.shape[0] / 2
-        roboOffsetX = self.robotArray.shape[1] / 2
+        roboOffsetY = round(0.5 * self.robotArray.shape[0])
+        roboOffsetX = round(0.5 * self.robotArray.shape[1])
         
         for x in range(self.envArray.shape[1]):
             for y in range(self.envArray.shape[0]):
@@ -122,18 +122,11 @@ class Workspace:
 
     # -------------------------------------------------------------------------
     def displayCSpace(self):
+        
         Image.fromarray(self.configSpace.astype(np.uint8)).show(title="Mask test")
 
     # -------------------------------------------------------------------------
     def isInCollision(self,x,y):
-        
-        # WTF haben wir einen Offset drin?
-        # Das linke obere Pixel ist -24,24 auf dem Canvas und nicht wie erwartet 0,0!!! ヽ(ಠ_ಠ)ノ
-        
-        # TODO: Woher bekomme ich den Offset im Programm am besten?
-        
-        print("--- Checking for collision at x: ", x+24, ", y: ", y+24)
-        print("     + value in c-space: ", self.configSpace[y+24, x+24])
         
         if (not self.configSpace[y, x]):
             return True      

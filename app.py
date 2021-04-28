@@ -28,9 +28,9 @@ def demo():
 
     workspace.drawAll(workspace.currentPos[0],workspace.currentPos[1])
     def callback(event):
-        # print ("clicked at", event.x, event.y)
+        print ("clicked at", event.x, event.y)
         controller.drawMouseOffSet(event.x, event.y)
-        if controller.isInCollision(): setBackgroundColor(page1,"red")
+        if controller.isInCollision(event.x, event.y): setBackgroundColor(page1,"red")
         else: setBackgroundColor(page1,"green")
 
     workspace.label.bind("<Button-1>", callback)
