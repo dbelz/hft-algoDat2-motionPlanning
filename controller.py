@@ -39,4 +39,8 @@ class Controller:
         self.workspace.currentPos = self.configspace.solutionPath[index]
         
     def display_c_space(self):
+        self.workspace.computer_c_space()
         self.workspace.display_c_space()
+        
+    def compute_path_with_sPRM(self):
+        self.workspace.compute_path_with_sPRM(self.workspace, self.configspace)

@@ -1,3 +1,4 @@
+from algorithms.sPRM import sPRM
 import sys
 import numpy as np
 from PIL import Image, ImageTk, ImageColor
@@ -23,9 +24,10 @@ class Workspace:
         self.robotImage = Image.open(robotImagePath).convert("1")
         self.robotArray = np.array(self.robotImage)
         self.robotPhoto = ImageTk.PhotoImage(self.robotImage)
+        self.robotRadius = round(0.5 * self.robotArray.shape[0])
 
         self._find_edges() # TODO: Refactor to return the edges and store them in self here
-        self._compute_c_pace() # TODO: Refactor to return the c-space and store it in self here
+        #self._compute_c_space() # TODO: Refactor to return the c-space and store it in self here
         
         # TODO: How to display the C-Space?
 
@@ -87,7 +89,7 @@ class Workspace:
 
 
     # -------------------------------------------------------------------------
-    def _compute_c_space(self):
+    def compute_c_space(self):
 
         print("--- Computing configuration space...")
         print("     + c-space width: ", self.envArray.shape[1])
@@ -126,12 +128,32 @@ class Workspace:
     # -------------------------------------------------------------------------
     def display_c_space(self):
         
-        Image.fromarray(self.config_space.astype(np.uint8)).show(title="Mask test")
+        Image.fromarray(self.config_space.astype(np.uint8)).show(title="Configuration space")
+
+    # -------------------------------------------------------------------------
+    def compute_path_with_sPRM(self, workspace, configspace):
+        
+        sprm = sPRM(50, 5000, workspace, configspace)
 
     # -------------------------------------------------------------------------
     def isInCollision(self,x,y):
         
-        if (not self.config_space[y, x]):
-            return True      
-        
-        return False
+        # x and y are the coords of the center pixel of the robot
+        #print("--- isInCollision(" + str(x) + "," + str(y) + ")")
+        # Improved collision detection: do not iterate over every pixel of the
+        # robot bitmap but only over the edge pixels. The collision detection
+        # is the same as above (edge pixel over a black pixel (obstacle) in
+        # the environment is a collision).
+        for pixel in self.robotEdgePixels:
+            
+            # skip check for pixels of the robot that are outside of the environment
+            # (if the robot is positioned at the very edge)
+            if (x - self.robotRadius + pixel[0] > self.envImage.size[0] - 1 or
+                y - self.robotRadius + pixel[1] > self.envImage.size[1] - 1):
+                continue
+            
+            if (not self.envImage.getpixel( (x - self.robotRadius + pixel[0], y - self.robotRadius + pixel[1]) )):
+                # Pixel of the env image is black, so we hit an obstacle here
+                return True
+
+        return False        

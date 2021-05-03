@@ -73,10 +73,17 @@ def demo():
     slider = Scale(page1, from_=0, to=200, orient=HORIZONTAL, command=moveRobotOnPath)
     slider.config(length=600)
 
+    # TODO: Pass algorithm to use as parameter
+    # TODO: Add two input fields to define number of samples and radius for the sPRM algo
+    def compute_path_with_sPRM():
+        controller.compute_path_with_sPRM()
+    sprm_btn = ttk.Button(page1, text = 'sPRM', command = compute_path_with_sPRM)
+    sprm_btn.pack(side=tkinter.RIGHT)
+    
     def display_c_space():
         controller.display_c_space()
-    setDrawCSpaceButton = ttk.Button(page1, text = 'Display C-Space', command = display_c_space)
-    setDrawCSpaceButton.pack(side=tkinter.RIGHT)
+    display_c_space_btn = ttk.Button(page1, text = 'Display C-Space', command = display_c_space)
+    display_c_space_btn.pack(side=tkinter.RIGHT)
     
     def set_goal():
         controller.setCurrentPosAsGoal()
@@ -90,7 +97,6 @@ def demo():
         controller.setCurrentPosAsInit()
     setInitButton = ttk.Button(page1, text = 'Set Init',command = set_init)
     setInitButton.pack(side=tkinter.RIGHT)
-
 
     slider.pack()
 
