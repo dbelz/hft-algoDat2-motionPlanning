@@ -13,11 +13,8 @@ class sPRM:
     # TODO: Is it really a good idea to pass the workspace into the algo class?
     def __init__(self, radius, nr_of_samples, workspace, configspace) -> None:
         
-        #edges = {}
         vertex = []
         graph = Graph()
-        #self.workspace = workspace
-        #self.configspace = configspace
         
         c_init = configspace.initConfig
         c_goal = configspace.goalConfig
@@ -81,7 +78,7 @@ class sPRM:
             shortest_path = dijkstra.get_path(self._encode_config(c_goal))
         except:
             print("No path can be found from {} to {}, using {} samples and a neighbor search radius of {}".format(c_init, c_goal, nr_of_samples, radius))
-            messagebox.showwarning("No path found", "No path can be found from {} to {}, using {} samples and a neighbor search radius of {}".format(c_init, c_goal, nr_of_samples, radius))
+            messagebox.showwarning("WARNING: No path found", "No path can be found from {} to {}, using {} samples and a neighbor search radius of {}".format(c_init, c_goal, nr_of_samples, radius))
             return
         
         print("Shortest path:")
@@ -98,6 +95,8 @@ class sPRM:
         print("Displaying solution path...")
         configspace.solutionPath = solution_path
         configspace.drawSpace()
+        
+        # TODO: Idea - switch to the configuration tab of the GUI automatically
         
         messagebox.showinfo("Solution path computed", "A solution path has been found!")
         
