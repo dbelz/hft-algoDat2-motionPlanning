@@ -29,8 +29,6 @@ class Workspace:
         self._find_edges() # TODO: Refactor to return the edges and store them in self here
         #self._compute_c_space() # TODO: Refactor to return the c-space and store it in self here
         
-        # TODO: How to display the C-Space?
-
         self.label = ttk.Label(root, image = self.envPhoto)
 
         self.currentPos = (0,0)
@@ -133,7 +131,7 @@ class Workspace:
     # -------------------------------------------------------------------------
     def compute_path_with_sPRM(self, workspace, configspace):
         
-        sprm = sPRM(50, 5000, workspace, configspace)
+        sprm = sPRM(15, 20_000, workspace, configspace)
 
     # -------------------------------------------------------------------------
     def isInCollision(self,x,y):
