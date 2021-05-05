@@ -47,20 +47,20 @@ class sPRM:
             #print("random sample: {} ==> x: {}, y: {}".format(i, x, y))
             
             # If the sample is not on an obstacle, add it to the vertex data structure
-            if (not workspace.isInCollision(x, y)):
+            if (not workspace.is_in_collision(x, y)):
                 self.vertex.append((x,y))
-            #else:
-                # TODO: Do I have to repeat this random sample to have the configured nr_of_samples in the end?
-                #print("COLLISION for sample: {} ==> x: {}, y: {}".format(i, x, y))
         
         # Iterate over all valid samples and search for neighbors in a given radius
         print("Searching for possible neighbors of each configuration sample...")
         start = time.perf_counter()
         for config in self.vertex:
             self._find_neighbors(config)
+        
+        # TODO: Parallelize the neighbor search    
         #print("Number of available CPUs: {}".format(mp.cpu_count()))
         #with mp.Pool(processes=4) as pool:
         #    pool.map(find_neighbors, [config for config in self.vertex])
+        
         end = time.perf_counter()
         print("Finding neighbors took {:0.4f} seconds".format(end - start))
                     
@@ -74,10 +74,7 @@ class sPRM:
         
         print("Computing the shortest path to {} now...".format(self._encode_config(c_goal)))
         try:
-            start = time.perf_counter()
             shortest_path = dijkstra.get_path(self._encode_config(c_goal))
-            end = time.perf_counter()
-            print("Computing the path took {:0.4f} seconds".format(end - start))
         except:
             print("No path can be found from {} to {}, using {} samples and a neighbor search radius of {}".format(c_init, c_goal, nr_of_samples, radius))
             messagebox.showwarning("WARNING: No path found", "No path can be found from {} to {}, using {} samples and a neighbor search radius of {}".format(c_init, c_goal, nr_of_samples, radius))
@@ -99,6 +96,7 @@ class sPRM:
         configspace.drawSpace()
         
         # TODO: Idea - switch to the configuration tab of the GUI automatically
+        # TODO: Idea - draw path directly on the environment picture
         
         messagebox.showinfo("Solution path computed", "A solution path has been found!")
         
@@ -127,7 +125,7 @@ class sPRM:
                 # To keep it simple we use the radius of the robot as a start
                 steps = np.linspace(config, possible_neighbor, round(dist/24), endpoint=False)
                 for step in steps:
-                    if (not self.workspace.isInCollision(int(step[0]), int(step[1]))):
+                    if (not self.workspace.is_in_collision(int(step[0]), int(step[1]))):
                         #print("POSSIBLE NEIGHBOR FOUND: {}".format(possible_neighbor))
                         self.graph.add_edge(self._encode_config(config), self._encode_config(possible_neighbor), dist)
         

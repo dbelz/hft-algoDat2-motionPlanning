@@ -129,15 +129,15 @@ class Workspace:
         Image.fromarray(self.config_space.astype(np.uint8)).show(title="Configuration space")
 
     # -------------------------------------------------------------------------
-    def compute_path_with_sPRM(self, workspace, configspace):
+    def compute_path_with_sPRM(self, radius, samples, workspace, configspace):
         
-        sprm = sPRM(15, 20_000, workspace, configspace)
+        sprm = sPRM(radius, samples, workspace, configspace)
 
     # -------------------------------------------------------------------------
-    def isInCollision(self,x,y):
+    def is_in_collis(self,x,y):
         
         # x and y are the coords of the center pixel of the robot
-        #print("--- isInCollision(" + str(x) + "," + str(y) + ")")
+        #print("--- is_in_collision(" + str(x) + "," + str(y) + ")")
         # Improved collision detection: do not iterate over every pixel of the
         # robot bitmap but only over the edge pixels. The collision detection
         # is the same as above (edge pixel over a black pixel (obstacle) in

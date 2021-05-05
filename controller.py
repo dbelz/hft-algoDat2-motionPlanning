@@ -42,5 +42,5 @@ class Controller:
         self.workspace.computer_c_space()
         self.workspace.display_c_space()
         
-    def compute_path_with_sPRM(self):
-        self.workspace.compute_path_with_sPRM(self.workspace, self.configspace)
+    def compute_path_with_sPRM(self, radius, samples):
+        self.workspace.compute_path_with_sPRM(radius, samples, self.workspace, self.configspace)

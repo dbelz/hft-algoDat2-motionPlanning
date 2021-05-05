@@ -1,5 +1,5 @@
 import tkinter 
-from tkinter import ttk, RIGHT, Canvas, BOTH, Scale, HORIZONTAL
+from tkinter import ttk, RIGHT, Canvas, BOTH, Scale, HORIZONTAL, END, messagebox
 from workspace import Workspace 
 from configspace import Configspace
 from controller import  Controller
@@ -53,7 +53,6 @@ def demo():
     configspace = Configspace(page2)
     controller = Controller(workspace,configspace)
 
-
     workspace.drawAll(workspace.currentPos[0],workspace.currentPos[1])
     def callback(event):
         print ("clicked at", event.x, event.y)
@@ -74,11 +73,38 @@ def demo():
     slider.config(length=600)
 
     # TODO: Pass algorithm to use as parameter
-    # TODO: Add two input fields to define number of samples and radius for the sPRM algo
     def compute_path_with_sPRM():
-        controller.compute_path_with_sPRM()
-    sprm_btn = ttk.Button(page1, text = 'sPRM', command = compute_path_with_sPRM)
+        
+        if (not controller.isAllInitialized()):
+            messagebox.showerror("Initialization error", "No init or goal state set!")
+            return
+        
+        try:
+            samples = int(config_samples_entry.get())
+            radius = int(radius_entry.get())
+        except:
+            messagebox.showerror("Input error", "Input for radius or number of samples missing or invalid!")
+            return
+            
+        controller.compute_path_with_sPRM(radius, samples)
+        
+    sprm_btn = ttk.Button(page1, text = 'Run sPRM', command = compute_path_with_sPRM)
     sprm_btn.pack(side=tkinter.RIGHT)
+    
+    # default values of r=50 and s=10000 seem to be a good idea
+    config_samples_entry = ttk.Entry(page1, width=6)
+    config_samples_entry.insert(END, "10000")
+    config_samples_entry.pack(side=tkinter.RIGHT)
+    
+    config_samples_lbl = ttk.Label(page1, text="samples")
+    config_samples_lbl.pack(side=tkinter.RIGHT, padx=5)
+    
+    radius_entry = ttk.Entry(page1, width=3)
+    radius_entry.insert(END, "50")
+    radius_entry.pack(side=tkinter.RIGHT)
+    
+    radius_entry_lbl = ttk.Label(page1, text="radius")
+    radius_entry_lbl.pack(side=tkinter.RIGHT, padx=5)
     
     def display_c_space():
         controller.display_c_space()
