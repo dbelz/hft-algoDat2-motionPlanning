@@ -27,7 +27,6 @@ class Workspace:
         self.robotRadius = round(0.5 * self.robotArray.shape[0])
 
         self._find_edges() # TODO: Refactor to return the edges and store them in self here
-        #self._compute_c_space() # TODO: Refactor to return the c-space and store it in self here
         
         self.label = ttk.Label(root, image = self.envPhoto)
 
@@ -134,7 +133,7 @@ class Workspace:
         sprm = sPRM(radius, samples, workspace, configspace)
 
     # -------------------------------------------------------------------------
-    def is_in_collis(self,x,y):
+    def is_in_collision(self,x,y):
         
         # x and y are the coords of the center pixel of the robot
         #print("--- is_in_collision(" + str(x) + "," + str(y) + ")")

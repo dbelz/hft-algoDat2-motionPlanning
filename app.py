@@ -88,6 +88,10 @@ def demo():
             
         controller.compute_path_with_sPRM(radius, samples)
         
+        # FIXME: Should not be here...
+        slider['from_'] = 0
+        slider['to_'] = len(configspace.solutionPath)-1
+        
     sprm_btn = ttk.Button(page1, text = 'Run sPRM', command = compute_path_with_sPRM)
     sprm_btn.pack(side=tkinter.RIGHT)
     

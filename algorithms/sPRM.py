@@ -24,8 +24,15 @@ class sPRM:
         self.workspace = workspace
         self.configspace = configspace
         
-        c_init = configspace.initConfig
-        c_goal = configspace.goalConfig
+        # The configutation stored in the config space is the top left corner
+        # of the robot, so we calculate the center of the robot here
+        c_init = (configspace.initConfig[0] + round(0.5 * workspace.robotImage.width),
+                  configspace.initConfig[1] + round(0.5 * workspace.robotImage.height))
+        c_goal = (configspace.goalConfig[0] + round(0.5 * workspace.robotImage.width),
+                  configspace.goalConfig[1] + round(0.5 * workspace.robotImage.height))
+        
+        print("Initial config: {}".format(c_init))
+        print("Goal config: {}".format(c_goal))
         
         # Add start and goal configurations to the vertex data structure
         self.vertex.append(c_init)

@@ -17,19 +17,21 @@ class Controller:
         self.configspace.drawSpace()
 
     def drawMouseOffSet(self,mouseX,mouseY):
-        self.workspace.drawAll(mouseX-round(0.5*self.workspace.robotImage.width),mouseY-round(0.5*self.workspace.robotImage.width),
-        self.configspace.initConfig[0],self.configspace.initConfig[1], 
-        self.configspace.goalConfig[0],self.configspace.goalConfig[1])
+        self.workspace.drawAll(mouseX-round(0.5*self.workspace.robotImage.width),
+                               mouseY-round(0.5*self.workspace.robotImage.height),
+                               self.configspace.initConfig[0],self.configspace.initConfig[1],
+                               self.configspace.goalConfig[0],self.configspace.goalConfig[1])
 
     def drawCurrentPos(self):
-        self.workspace.drawAll(self.workspace.currentPos[0],self.workspace.currentPos[1],
-        self.configspace.initConfig[0],self.configspace.initConfig[1], 
-        self.configspace.goalConfig[0],self.configspace.goalConfig[1])
+        self.workspace.drawAll(self.workspace.currentPos[0]-round(0.5*self.workspace.robotImage.width),
+                               self.workspace.currentPos[1]-round(0.5*self.workspace.robotImage.height),
+                               self.configspace.initConfig[0],self.configspace.initConfig[1],
+                               self.configspace.goalConfig[0],self.configspace.goalConfig[1])
 
     def isInCollision(self, x=None,y=None):
-        if x is None: x= self.workspace.currentPos[0]
-        if y is None: y= self.workspace.currentPos[1]
-        return self.workspace.isInCollision(x,y)
+        if x is None: x= self.workspace.currentPos[0]+round(0.5*self.workspace.robotImage.width)
+        if y is None: y= self.workspace.currentPos[1]+round(0.5*self.workspace.robotImage.height)
+        return self.workspace.is_in_collision(x,y)
 
     def isAllInitialized(self):
         if self.configspace.isInitialize and self.workspace.isInitialize: return True
