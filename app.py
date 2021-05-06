@@ -72,12 +72,36 @@ def demo():
     slider = Scale(page1, from_=0, to=200, orient=HORIZONTAL, command=moveRobotOnPath)
     slider.config(length=600)
 
-    # TODO: Pass algorithm to use as parameter
-    def compute_path_with_sPRM():
-        
+
+    
+#    def display_c_space():
+#        controller.display_c_space()
+#    display_c_space_btn = ttk.Button(page1, text = 'Display C-Space', command = display_c_space)
+#    display_c_space_btn.pack(side=tkinter.RIGHT)
+    
+    def set_goal():
+
+        controller.setCurrentPosAsGoal()
         if (not controller.isAllInitialized()):
-            messagebox.showerror("Initialization error", "No init or goal state set!")
+            messagebox.showerror("Initialization error", "Set an init state first!")
             return
+        
+        controller.find_path()
+        
+        slider['from_'] = 0
+        slider['to_'] = len(configspace.solutionPath)-1
+
+    setGoalButton = ttk.Button(page1, text = 'Set Goal',command = set_goal)
+    setGoalButton.pack(side=tkinter.RIGHT)
+
+    def set_init():
+        controller.setCurrentPosAsInit()
+    setInitButton = ttk.Button(page1, text = 'Set Init',command = set_init)
+    setInitButton.pack(side=tkinter.RIGHT)
+
+    # TODO: Keep in mind: We might need a drop-down to choose the algorithm later
+    
+    def construct_roadmap_with_sPRM():
         
         try:
             samples = int(config_samples_entry.get())
@@ -86,13 +110,11 @@ def demo():
             messagebox.showerror("Input error", "Input for radius or number of samples missing or invalid!")
             return
             
-        controller.compute_path_with_sPRM(radius, samples)
+        controller.construct_roadmap_with_sPRM(radius, samples)
         
-        # FIXME: Should not be here...
-        slider['from_'] = 0
-        slider['to_'] = len(configspace.solutionPath)-1
-        
-    sprm_btn = ttk.Button(page1, text = 'Run sPRM', command = compute_path_with_sPRM)
+        messagebox.showinfo("Roadmap constructed", "Roadmap is constructed, you can now choose an init a goal state for the robot...")
+                
+    sprm_btn = ttk.Button(page1, text = 'sPRM', command = construct_roadmap_with_sPRM)
     sprm_btn.pack(side=tkinter.RIGHT)
     
     # default values of r=50 and s=10000 seem to be a good idea
@@ -109,24 +131,6 @@ def demo():
     
     radius_entry_lbl = ttk.Label(page1, text="radius")
     radius_entry_lbl.pack(side=tkinter.RIGHT, padx=5)
-    
-    def display_c_space():
-        controller.display_c_space()
-    display_c_space_btn = ttk.Button(page1, text = 'Display C-Space', command = display_c_space)
-    display_c_space_btn.pack(side=tkinter.RIGHT)
-    
-    def set_goal():
-        controller.setCurrentPosAsGoal()
-        slider['from_'] = 0
-        slider['to_'] = len(configspace.solutionPath)-1
-
-    setGoalButton = ttk.Button(page1, text = 'Set Goal',command = set_goal)
-    setGoalButton.pack(side=tkinter.RIGHT)
-
-    def set_init():
-        controller.setCurrentPosAsInit()
-    setInitButton = ttk.Button(page1, text = 'Set Init',command = set_init)
-    setInitButton.pack(side=tkinter.RIGHT)
 
     slider.pack()
 

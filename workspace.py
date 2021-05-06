@@ -128,9 +128,15 @@ class Workspace:
         Image.fromarray(self.config_space.astype(np.uint8)).show(title="Configuration space")
 
     # -------------------------------------------------------------------------
-    def compute_path_with_sPRM(self, radius, samples, workspace, configspace):
+    def construct_roadmap_with_sPRM(self, radius, samples, workspace, configspace):
         
-        sprm = sPRM(radius, samples, workspace, configspace)
+        self.sprm = sPRM(workspace, configspace)
+        self.sprm.distribute_configuration_samples(samples)
+        self.sprm.build_neighbor_graph(radius)
+        
+    # -------------------------------------------------------------------------
+    def find_path(self, c_init, c_goal):
+        return self.sprm.find_path(c_init, c_goal)
 
     # -------------------------------------------------------------------------
     def is_in_collision(self,x,y):

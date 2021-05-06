@@ -44,5 +44,12 @@ class Controller:
         self.workspace.computer_c_space()
         self.workspace.display_c_space()
         
-    def compute_path_with_sPRM(self, radius, samples):
-        self.workspace.compute_path_with_sPRM(radius, samples, self.workspace, self.configspace)
+    def construct_roadmap_with_sPRM(self, radius, samples):
+        self.workspace.construct_roadmap_with_sPRM(radius, samples, self.workspace, self.configspace)
+        
+    def find_path(self):
+        
+        solution_path = self.workspace.find_path(self.configspace.initConfig, self.configspace.goalConfig)
+        if (solution_path):
+            self.configspace.solutionPath = solution_path
+        self.configspace.drawSpace()
