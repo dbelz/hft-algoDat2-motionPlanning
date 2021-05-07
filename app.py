@@ -112,7 +112,7 @@ def demo():
             
         controller.construct_roadmap_with_sPRM(radius, samples)
         
-        messagebox.showinfo("Roadmap constructed", "Roadmap is constructed, you can now choose an init a goal state for the robot...")
+        messagebox.showinfo("Roadmap constructed", "Roadmap constructed, choose init and goal state for the robot")
                 
     sprm_btn = ttk.Button(page1, text = 'sPRM', command = construct_roadmap_with_sPRM)
     sprm_btn.pack(side=tkinter.RIGHT)
