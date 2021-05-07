@@ -1,3 +1,6 @@
+from utils import is_in_collision
+
+
 class Controller:
     def __init__(self, workspace, configspace):
         self.workspace = workspace
@@ -31,7 +34,7 @@ class Controller:
     def isInCollision(self, x=None,y=None):
         if x is None: x= self.workspace.currentPos[0]+round(0.5*self.workspace.robotImage.width)
         if y is None: y= self.workspace.currentPos[1]+round(0.5*self.workspace.robotImage.height)
-        return self.workspace.is_in_collision(x,y)
+        return is_in_collision(self.workspace, x, y)
 
     def isAllInitialized(self):
         if self.configspace.isInitialize and self.workspace.isInitialize: return True
