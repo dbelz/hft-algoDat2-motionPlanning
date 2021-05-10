@@ -138,25 +138,4 @@ class Workspace:
     def find_path(self, c_init, c_goal):
         return self.sprm.find_path(c_init, c_goal)
 
-    # -------------------------------------------------------------------------
-    def is_in_collision(self,x,y):
-        
-        # x and y are the coords of the center pixel of the robot
-        #print("--- is_in_collision(" + str(x) + "," + str(y) + ")")
-        # Improved collision detection: do not iterate over every pixel of the
-        # robot bitmap but only over the edge pixels. The collision detection
-        # is the same as above (edge pixel over a black pixel (obstacle) in
-        # the environment is a collision).
-        for pixel in self.robotEdgePixels:
-            
-            # skip check for pixels of the robot that are outside of the environment
-            # (if the robot is positioned at the very edge)
-            if (x - self.robotRadius + pixel[0] > self.envImage.size[0] - 1 or
-                y - self.robotRadius + pixel[1] > self.envImage.size[1] - 1):
-                continue
-            
-            if (not self.envImage.getpixel( (x - self.robotRadius + pixel[0], y - self.robotRadius + pixel[1]) )):
-                # Pixel of the env image is black, so we hit an obstacle here
-                return True
-
-        return False        
+  
