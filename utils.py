@@ -77,7 +77,7 @@ def get_cfg_between(c_near, c_rand, range):
     length = np.linalg.norm(diff)
     diff = (diff / length) * min (range, length)
 
-    return (c_near[0] + diff[0], c_near[1] + diff[1])
+    return (int(c_near[0] + diff[0]), int(c_near[1] + diff[1]))
 
 
 # -------------------------------------------------------------------------

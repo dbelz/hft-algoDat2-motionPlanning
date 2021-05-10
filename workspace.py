@@ -1,3 +1,4 @@
+from algorithms.RRT import RRT
 from algorithms.sPRM import sPRM
 import sys
 import numpy as np
@@ -135,7 +136,12 @@ class Workspace:
         self.sprm.build_neighbor_graph(radius)
         
     # -------------------------------------------------------------------------
-    def find_path(self, c_init, c_goal):
+    def find_path_with_sprm(self, c_init, c_goal):
         return self.sprm.find_path(c_init, c_goal)
+    
+    # -------------------------------------------------------------------------
+    def find_path_with_rrt(self, workspace, configspace, c_init, c_goal, range, iterations):
+        self.rrt = RRT(workspace, configspace, c_init, c_goal, range, iterations)
+        return self.rrt.find_path()
 
   

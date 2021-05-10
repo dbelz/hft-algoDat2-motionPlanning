@@ -54,6 +54,8 @@ def demo():
     controller = Controller(workspace,configspace)
 
     workspace.drawAll(workspace.currentPos[0],workspace.currentPos[1])
+    
+    # -------------------------------------------------------------------------
     def callback(event):
         print ("clicked at", event.x, event.y)
         controller.drawMouseOffSet(event.x, event.y)
@@ -62,6 +64,7 @@ def demo():
 
     workspace.label.bind("<Button-1>", callback)
 
+    # -------------------------------------------------------------------------
     def moveRobotOnPath(val):
         if controller.isAllInitialized():
             controller.setSolutionPathOnCurrentPos(int(val))
@@ -72,13 +75,20 @@ def demo():
     slider = Scale(page1, from_=0, to=200, orient=HORIZONTAL, command=moveRobotOnPath)
     slider.config(length=600)
 
-
+    # -------------------------------------------------------------------------
+    def find_path_with_rrt():
+        controller.find_path_with_rrt()
+        
+    rrt_btn = ttk.Button(page1, text='RRT', command = find_path_with_rrt)
+    rrt_btn.pack(side=tkinter.RIGHT)
     
+    # -------------------------------------------------------------------------
 #    def display_c_space():
 #        controller.display_c_space()
 #    display_c_space_btn = ttk.Button(page1, text = 'Display C-Space', command = display_c_space)
 #    display_c_space_btn.pack(side=tkinter.RIGHT)
     
+    # -------------------------------------------------------------------------
     def set_goal():
 
         controller.setCurrentPosAsGoal()
@@ -86,7 +96,7 @@ def demo():
             messagebox.showerror("Initialization error", "Set an init state first!")
             return
         
-        controller.find_path()
+        controller.find_path_with_sprm()
         
         slider['from_'] = 0
         slider['to_'] = len(configspace.solutionPath)-1
@@ -94,6 +104,7 @@ def demo():
     setGoalButton = ttk.Button(page1, text = 'Set Goal',command = set_goal)
     setGoalButton.pack(side=tkinter.RIGHT)
 
+    # -------------------------------------------------------------------------
     def set_init():
         controller.setCurrentPosAsInit()
     setInitButton = ttk.Button(page1, text = 'Set Init',command = set_init)
@@ -101,6 +112,7 @@ def demo():
 
     # TODO: Keep in mind: We might need a drop-down to choose the algorithm later
     
+    # -------------------------------------------------------------------------
     def construct_roadmap_with_sPRM():
         
         try:
@@ -116,6 +128,8 @@ def demo():
                 
     sprm_btn = ttk.Button(page1, text = 'sPRM', command = construct_roadmap_with_sPRM)
     sprm_btn.pack(side=tkinter.RIGHT)
+    
+    # -------------------------------------------------------------------------
     
     # default values of r=50 and s=10000 seem to be a good idea
     config_samples_entry = ttk.Entry(page1, width=6)

@@ -50,9 +50,22 @@ class Controller:
     def construct_roadmap_with_sPRM(self, radius, samples):
         self.workspace.construct_roadmap_with_sPRM(radius, samples, self.workspace, self.configspace)
         
-    def find_path(self):
+    def find_path_with_sprm(self):
         
-        solution_path = self.workspace.find_path(self.configspace.initConfig, self.configspace.goalConfig)
+        solution_path = self.workspace.find_path_with_sprm(self.configspace.initConfig,
+                                                           self.configspace.goalConfig)
+        if (solution_path):
+            self.configspace.solutionPath = solution_path
+        self.configspace.drawSpace()
+        
+    def find_path_with_rrt(self):
+        
+        solution_path = self.workspace.find_path_with_rrt(self.workspace,
+                                                          self.configspace,
+                                                          (1260,180),
+                                                          (94,408),
+                                                          50,
+                                                          5_000)
         if (solution_path):
             self.configspace.solutionPath = solution_path
         self.configspace.drawSpace()
