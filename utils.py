@@ -54,7 +54,31 @@ def find_neighbors(workspace, config, vertex, graph, radius, debug=False, revers
                     graph.add_edge(encode_config(possible_neighbor), encode_config(config), dist)
                 else:
                     graph.add_edge(encode_config(config), encode_config(possible_neighbor), dist)
+   
+   
+# -----------------------------------------------------------------------------
+def find_nearest_neighbor(config, vertex):
     
+    c_near = None
+    min_dist = float("inf")
+    
+    for possible_neighbor in vertex:
+        dist = calculate_distance(config, possible_neighbor)
+        if (dist < min_dist and dist > 0):
+            c_near = possible_neighbor
+    
+    return c_near
+
+
+# -----------------------------------------------------------------------------
+def get_cfg_between(c_near, c_rand, range):
+
+    diff = np.array(c_rand) - np.array(c_near)
+    length = np.linalg.norm(diff)
+    diff = (diff / length) * min (range, length)
+
+    return (c_near[0] + diff[0], c_near[1] + diff[1])
+
 
 # -------------------------------------------------------------------------
 def is_edge_valid(workspace, config, possible_neighbor, dist):
