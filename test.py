@@ -7,9 +7,9 @@ from pprint import pprint as pp
 #np.set_printoptions(threshold=sys.maxsize)
 np.set_printoptions(suppress=True,linewidth=np.nan,threshold=sys.maxsize)
 
-x = np.arange(0, 250)
-y = np.arange(0, 250)
-arr = np.zeros((y.size, x.size))
+#x = np.arange(0, 250)
+#y = np.arange(0, 250)
+#arr = np.zeros((y.size, x.size))
 
 # cx = 12.
 # cy = 16.
@@ -32,17 +32,18 @@ arr = np.zeros((y.size, x.size))
 # arr[mask] = 1
 # pp(arr)
 
-roboImage = Image.open("./resources/robot_BW_small.bmp").convert("1")
-roboArray = np.array(roboImage)
+# roboImage = Image.open("./resources/robot_BW_small.bmp").convert("1")
+# roboArray = np.array(roboImage)
 
-mask = np.ones(shape=arr.shape[0:2], dtype="bool")
+# mask = np.ones(shape=arr.shape[0:2], dtype="bool")
 
-roboX = 50
-roboY = 50
+# roboX = 50
+# roboY = 50
 
-print(mask.dtype, mask.min(), mask.max())
+# print(mask.dtype, mask.min(), mask.max())
 
 
-arr[mask] = 1
+# arr[mask] = 1
 
-Image.fromarray(arr.astype(np.uint8)).show(title="Mask test")
+# Image.fromarray(arr.astype(np.uint8)).show(title="Mask test")
+
