@@ -94,10 +94,10 @@ class sPRM:
             end_time = time.perf_counter()
             print("[PERF] Duration of finding the shortest path: {:0.4f} seconds".format(end_time - start_time))
         
-            show_info("[INF] Solution path has been found")
+            show_info("Solution path has been found")
             path_found = True
         except:
-            show_warning("[WARN] No path can be found from {} to {}!".format(c_init, c_goal))
+            show_warning("No path can be found from {} to {}!".format(c_init, c_goal))
         
         solution_path = []
         if (path_found):
