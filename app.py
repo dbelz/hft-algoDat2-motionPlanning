@@ -1,5 +1,6 @@
+import sys
 import tkinter 
-from tkinter import ttk, RIGHT, Canvas, BOTH, Scale, HORIZONTAL, END, messagebox
+from tkinter import Label, ttk, RIGHT, Canvas, BOTH, Scale, HORIZONTAL, END, messagebox
 from workspace import Workspace 
 from configspace import Configspace
 from controller import  Controller
@@ -36,10 +37,15 @@ If the implementation is easy to explain, it may be a good idea.
 Namespaces are one honking great idea -- let's do more of those!
 """
 
+def bye_bye(self):
+    sys.exit()
+
 def demo():
     root = tkinter.Tk()
     root.title("Motion Planning")
     universal_height = 1000
+
+    root.bind('<Control-q>', bye_bye)
 
     nb = ttk.Notebook(root)
     page1 = ttk.Frame(nb, width= 1080,height = universal_height)
@@ -59,60 +65,65 @@ def demo():
     def callback(event):
         print ("clicked at", event.x, event.y)
         controller.drawMouseOffSet(event.x, event.y)
-        if controller.isInCollision(event.x, event.y): setBackgroundColor(page1,"red")
-        else: setBackgroundColor(page1,"green")
+        if controller.isInCollision(event.x, event.y): setBackgroundColor(col_stat_lbl,"red")
+        else: setBackgroundColor(col_stat_lbl,"green")
 
     workspace.label.bind("<Button-1>", callback)
 
-    # -------------------------------------------------------------------------
-    def moveRobotOnPath(val):
-        if controller.isAllInitialized():
-            controller.setSolutionPathOnCurrentPos(int(val))
-            controller.drawCurrentPos()
-            if controller.isInCollision(): setBackgroundColor(page1,"red")
-            else: setBackgroundColor(page1,"green")
-
-    slider = Scale(page1, from_=0, to=200, orient=HORIZONTAL, command=moveRobotOnPath)
-    slider.config(length=600)
-
-    # -------------------------------------------------------------------------
-    def find_path_with_rrt():
-        controller.find_path_with_rrt()
-        
-    rrt_btn = ttk.Button(page1, text='RRT', command = find_path_with_rrt)
-    rrt_btn.pack(side=tkinter.RIGHT)
-    
     # -------------------------------------------------------------------------
 #    def display_c_space():
 #        controller.display_c_space()
 #    display_c_space_btn = ttk.Button(page1, text = 'Display C-Space', command = display_c_space)
 #    display_c_space_btn.pack(side=tkinter.RIGHT)
     
-    # -------------------------------------------------------------------------
-    def set_goal():
 
+    # -------------------------------------------------------------------------
+    # Start and goal configuration
+    # -------------------------------------------------------------------------
+    
+    position_frame = ttk.LabelFrame(page1, text="Position")
+    position_frame.pack(side=tkinter.LEFT, padx=2)
+
+    # --- Start configuration
+    def set_init():
+        controller.setCurrentPosAsInit()
+    setInitButton = ttk.Button(position_frame, text = 'Set Init',command = set_init)
+    setInitButton.pack(side=tkinter.LEFT)
+
+    # --- Goal configuration
+    def set_goal():
         controller.setCurrentPosAsGoal()
         if (not controller.isAllInitialized()):
             messagebox.showerror("Initialization error", "Set an init state first!")
             return
-        
-        controller.find_path_with_sprm()
-        
-        slider['from_'] = 0
-        slider['to_'] = len(configspace.solutionPath)-1
-
-    setGoalButton = ttk.Button(page1, text = 'Set Goal',command = set_goal)
-    setGoalButton.pack(side=tkinter.RIGHT)
+    setGoalButton = ttk.Button(position_frame, text = 'Set Goal',command = set_goal)
+    setGoalButton.pack(side=tkinter.LEFT)
 
     # -------------------------------------------------------------------------
-    def set_init():
-        controller.setCurrentPosAsInit()
-    setInitButton = ttk.Button(page1, text = 'Set Init',command = set_init)
-    setInitButton.pack(side=tkinter.RIGHT)
+    # sPRM
+    # -------------------------------------------------------------------------
+    # default values of r=50 and s=10000 seem to be a good idea
 
-    # TODO: Keep in mind: We might need a drop-down to choose the algorithm later
+    sprm_frame = ttk.LabelFrame(page1, text="sPRM")
+    sprm_frame.pack(side=tkinter.LEFT, padx=2)
     
-    # -------------------------------------------------------------------------
+    # --- Number of configuration samples
+    config_samples_lbl = ttk.Label(sprm_frame, text="samples")
+    config_samples_lbl.pack(side=tkinter.LEFT, padx=5)
+    
+    config_samples_entry = ttk.Entry(sprm_frame, width=6)
+    config_samples_entry.insert(END, "10000")
+    config_samples_entry.pack(side=tkinter.LEFT)
+
+    # --- RADIUS    
+    radius_entry_lbl = ttk.Label(sprm_frame, text="radius")
+    radius_entry_lbl.pack(side=tkinter.LEFT, padx=5)
+
+    radius_entry = ttk.Entry(sprm_frame, width=3)
+    radius_entry.insert(END, "50")
+    radius_entry.pack(side=tkinter.LEFT)
+
+    # --- Button to create the roadmap
     def construct_roadmap_with_sPRM():
         
         try:
@@ -125,29 +136,91 @@ def demo():
         controller.construct_roadmap_with_sPRM(radius, samples)
         
         messagebox.showinfo("Roadmap constructed", "Roadmap constructed, choose init and goal state for the robot")
-                
-    sprm_btn = ttk.Button(page1, text = 'sPRM', command = construct_roadmap_with_sPRM)
-    sprm_btn.pack(side=tkinter.RIGHT)
-    
+
+    sprm_roadmap_btn = ttk.Button(sprm_frame, text = 'Roadmap', command = construct_roadmap_with_sPRM)
+    sprm_roadmap_btn.pack(side=tkinter.LEFT)
+
+    # --- Button to find path
+    def find_path_with_sprm():
+
+        controller.find_path_with_sprm()
+        
+        slider['from_'] = 0
+        slider['to_'] = len(configspace.solutionPath)-1
+
+    sprm_path_btn = ttk.Button(sprm_frame, text="Path", command=find_path_with_sprm)
+    sprm_path_btn.pack(side=tkinter.LEFT)
+
     # -------------------------------------------------------------------------
-    
-    # default values of r=50 and s=10000 seem to be a good idea
-    config_samples_entry = ttk.Entry(page1, width=6)
-    config_samples_entry.insert(END, "10000")
-    config_samples_entry.pack(side=tkinter.RIGHT)
-    
-    config_samples_lbl = ttk.Label(page1, text="samples")
-    config_samples_lbl.pack(side=tkinter.RIGHT, padx=5)
-    
-    radius_entry = ttk.Entry(page1, width=3)
-    radius_entry.insert(END, "50")
-    radius_entry.pack(side=tkinter.RIGHT)
-    
-    radius_entry_lbl = ttk.Label(page1, text="radius")
-    radius_entry_lbl.pack(side=tkinter.RIGHT, padx=5)
+    # RRT
+    # -------------------------------------------------------------------------
 
-    slider.pack()
+    rrt_frame = ttk.LabelFrame(page1, text="RRT")
+    rrt_frame.pack(side=tkinter.LEFT, padx=2)
 
+    # --- Number of iterations
+    iterations_entry_lbl = ttk.Label(rrt_frame, text="iterations")
+    iterations_entry_lbl.pack(side=tkinter.LEFT, padx=5)
+    
+    iterations_entry = ttk.Entry(rrt_frame, width=6)
+    iterations_entry.insert(END, "10000")
+    iterations_entry.pack(side=tkinter.LEFT)
+
+    # --- Range to c_new    
+    range_entry_lbl = ttk.Label(rrt_frame, text="range")
+    range_entry_lbl.pack(side=tkinter.LEFT, padx=5)
+
+    range_entry = ttk.Entry(rrt_frame, width=3)
+    range_entry.insert(END, "50")
+    range_entry.pack(side=tkinter.LEFT)
+
+    # --- Button to find path
+    def find_path_with_rrt():
+
+        if (not controller.isAllInitialized()):
+            messagebox.showerror("Initialization error", "Set an init and goal state first!")
+            return
+
+        try:
+            iterations = int(iterations_entry.get())
+            range = int(range_entry.get())
+        except:
+            messagebox.showerror("Input error", "Input for radius or number of samples missing or invalid!")
+            return
+
+        controller.find_path_with_rrt(range, iterations)
+
+        slider['from_'] = 0
+        slider['to_'] = len(configspace.solutionPath)-1
+        
+    rrt_btn = ttk.Button(rrt_frame, text='Path', command = find_path_with_rrt)
+    rrt_btn.pack(side=tkinter.LEFT)
+
+    # -------------------------------------------------------------------------
+    # Slider to move robot on the solution path
+    # -------------------------------------------------------------------------
+    def moveRobotOnPath(val):
+        if controller.isAllInitialized():
+            controller.setSolutionPathOnCurrentPos(int(val))
+            controller.drawCurrentPos()
+            if controller.isInCollision(): setBackgroundColor(col_stat_lbl,"red")
+            else: setBackgroundColor(col_stat_lbl,"green")
+
+    slider = Scale(page1, from_=0, to=200, orient=HORIZONTAL, command=moveRobotOnPath)
+    slider.config(length=400)
+    slider.pack(side=tkinter.LEFT, padx=2)
+
+    # -------------------------------------------------------------------------
+    # Collision status
+    # -------------------------------------------------------------------------
+
+    col_stat_frame = ttk.LabelFrame(page1, text="Collision")
+    col_stat_frame.pack(side=tkinter.LEFT, padx=2)
+
+    col_stat_lbl = Label(col_stat_frame, width=10)
+    col_stat_lbl.pack(side=tkinter.LEFT)
+
+    # -------------------------------------------------------------------------
     root.mainloop()
 
 

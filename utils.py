@@ -5,11 +5,8 @@ import random
 
 
 # -------------------------------------------------------------------------    
-def setBackgroundColor(frame, color):
-    style = ttk.Style()     # Create style
-    style.configure("A.TFrame", background=color) # Set bg color
-    frame.config(style='A.TFrame')    # Apply style to widget
-
+def setBackgroundColor(col_stat_lbl, color):
+    col_stat_lbl.config(bg=color)
 
 # -------------------------------------------------------------------------    
 def show_info(msg, debug=False):
@@ -65,6 +62,7 @@ def find_nearest_neighbor(config, vertex):
     for possible_neighbor in vertex:
         dist = calculate_distance(config, possible_neighbor)
         if (dist < min_dist and dist > 0):
+            min_dist = dist
             c_near = possible_neighbor
     
     return c_near

@@ -58,14 +58,14 @@ class Controller:
             self.configspace.solutionPath = solution_path
         self.configspace.drawSpace()
         
-    def find_path_with_rrt(self):
+    def find_path_with_rrt(self, range, iterations):
         
         solution_path = self.workspace.find_path_with_rrt(self.workspace,
                                                           self.configspace,
-                                                          (1260,180),
-                                                          (94,408),
-                                                          50,
-                                                          5_000)
+                                                          self.configspace.initConfig,
+                                                          self.configspace.goalConfig,
+                                                          range,
+                                                          iterations)
         if (solution_path):
             self.configspace.solutionPath = solution_path
         self.configspace.drawSpace()
