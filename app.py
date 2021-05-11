@@ -63,7 +63,7 @@ def demo():
     
     # -------------------------------------------------------------------------
     def callback(event):
-        print ("clicked at", event.x, event.y)
+        print ("Mouse position: ({}, {})".format(event.x, event.y))
         controller.drawMouseOffSet(event.x, event.y)
         if controller.isInCollision(event.x, event.y): setBackgroundColor(col_stat_lbl,"red")
         else: setBackgroundColor(col_stat_lbl,"green")
@@ -115,7 +115,7 @@ def demo():
     config_samples_entry.insert(END, "10000")
     config_samples_entry.pack(side=tkinter.LEFT)
 
-    # --- RADIUS    
+    # --- Radius    
     radius_entry_lbl = ttk.Label(sprm_frame, text="radius")
     radius_entry_lbl.pack(side=tkinter.LEFT, padx=5)
 

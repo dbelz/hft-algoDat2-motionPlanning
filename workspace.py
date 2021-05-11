@@ -25,6 +25,7 @@ class Workspace:
         self.robotImage = Image.open(robotImagePath).convert("1")
         self.robotArray = np.array(self.robotImage)
         self.robotPhoto = ImageTk.PhotoImage(self.robotImage)
+        # TODO: Change to robot_height and robot_width to be more general applicable (not just to a circle robot)
         self.robotRadius = round(0.5 * self.robotArray.shape[0])
 
         self._find_edges() # TODO: Refactor to return the edges and store them in self here
@@ -35,12 +36,23 @@ class Workspace:
         self.isInitialize = False
 
     # -------------------------------------------------------------------------
-    def drawAll (self,xCurrent,yCurrent,xInit=-1,yInit=-1,xGoal=-1,yGoal=-1):
-        self.currentPos=xCurrent,yCurrent
+    def drawAll (self, xCurrent, yCurrent, xInit=-1, yInit=-1, xGoal=-1, yGoal=-1):
+        # self.currentPos has to hold the center of the robot,
+        # not the top left corner of the robot image!
+        self.currentPos = xCurrent, yCurrent
         self.imageToDraw = self.envImage.copy()
-        if xInit>-1: self.imageToDraw.paste(self.robotImage.copy(),(xInit,yInit))
-        if xGoal>-1: self.imageToDraw.paste(self.robotImage.copy(),(xGoal,yGoal))
-        self.imageToDraw.paste(self.robotImage.copy(),(self.currentPos[0],self.currentPos[1]))
+        if xInit>-1: self.imageToDraw.paste(
+            self.robotImage.copy(),
+            (xInit - round(0.5 * self.robotImage.width),
+             yInit - round(0.5 * self.robotImage.height)))
+        if xGoal>-1: self.imageToDraw.paste(
+            self.robotImage.copy(),
+            (xGoal - round(0.5 * self.robotImage.width),
+             yGoal - round(0.5 * self.robotImage.height)))
+        self.imageToDraw.paste(
+            self.robotImage.copy(),
+            (self.currentPos[0] - round(0.5 * self.robotImage.width),
+             self.currentPos[1] - round(0.5 * self.robotImage.height)))
         self.photoToDraw = ImageTk.PhotoImage(self.imageToDraw)
         self.label.configure(image=self.photoToDraw)
         self.label.image = self.photoToDraw

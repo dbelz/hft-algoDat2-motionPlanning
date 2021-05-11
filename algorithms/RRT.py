@@ -1,5 +1,5 @@
 import random
-from utils import calculate_distance, decode_config, encode_config, find_nearest_neighbor, find_neighbors, get_cfg_between, is_edge_valid, is_in_collision, show_info, show_warning
+from utils import calculate_distance, decode_config, encode_config, find_nearest_neighbor, find_neighbors, get_cfg_between, is_edge_valid, is_in_collision, show_info, show_progress, show_warning
 from dijkstra import DijkstraSPF, Graph
 import time
 
@@ -41,6 +41,8 @@ class RRT:
         env_height = self.workspace.envArray.shape[0] - 1
         
         for n_iter in range(self.iterations):
+            
+            show_progress(int((n_iter/self.iterations)*100))
             
             r_x = int(random.uniform(0, env_width))
             r_y = int(random.uniform(0, env_height))
@@ -88,9 +90,10 @@ class RRT:
                 self.graph.add_edge(encode_config(c_new), encode_config(self.c_goal), dist)
                 self.goal_reached = True
                 break
+        print() # To clear the progress bar
         
         stop_time = time.perf_counter()
-        print("Duration of RRT path search: {} ms".format(stop_time-start_time))
+        print("Duration of RRT path search: {} seconds".format(stop_time-start_time))
 
         print("==> numbers of nodes added to graph: ", self.graph.get_number_of_nodes())
         
