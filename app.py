@@ -62,7 +62,7 @@ def demo():
     
     # -------------------------------------------------------------------------
     def callback(event):
-        print ("Mouse position: ({}, {})".format(event.x, event.y))
+        print ("[POS] Mouse click: ({}, {})".format(event.x, event.y))
         controller.drawMouseOffSet(event.x, event.y)
         if controller.isInCollision(event.x, event.y): show_collision_status(col_stat_lbl, True)
         else: show_collision_status(col_stat_lbl, False)

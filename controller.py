@@ -10,12 +10,14 @@ class Controller:
             self.workspace.envArray.shape[0] - workspace.robotRadius)
 
     def setCurrentPosAsInit(self):
-        self.configspace.initConfig=(self.workspace.currentPos[0],self.workspace.currentPos[1])
+        self.configspace.initConfig = (self.workspace.currentPos[0], self.workspace.currentPos[1])
+        print("[POS] Initial configuration set to ", self.configspace.initConfig)
         self.configspace.drawSpace()
 
     def setCurrentPosAsGoal(self):
-        self.configspace.goalConfig=(self.workspace.currentPos[0],self.workspace.currentPos[1])
-        self.configspace.setIntialSolutionPath()
+        self.configspace.goalConfig = (self.workspace.currentPos[0], self.workspace.currentPos[1])
+        print("[POS] Goal configuration set to ", self.configspace.goalConfig)
+        self.configspace.set_initial_solution_path()
         self.configspace.isInitialize = True
         self.workspace.isInitialize = True
         self.configspace.drawSpace()
@@ -48,8 +50,7 @@ class Controller:
         
         self.workspace.computer_c_space()
         self.workspace.display_c_space()
-        
-        
+
     # -------------------------------------------------------------------------
     def construct_roadmap_with_sPRM(self, radius, samples):
         

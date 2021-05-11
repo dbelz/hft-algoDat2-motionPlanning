@@ -19,13 +19,16 @@ class sPRM:
     # -------------------------------------------------------------------------
     def distribute_configuration_samples(self, number):
         
+        
         self.nr_of_samples = number
         
         env_width = self.workspace.envArray.shape[1] - 1
         env_height = self.workspace.envArray.shape[0] - 1
         #print("env_width: {}, env_height: {}".format(env_width, env_height))
         
-        print("Creating random configuration samples...")
+        print("[INF] Creating random configuration samples...")
+        start_time = time.perf_counter()
+        
         for _ in range(number):
             x = int(random.uniform(0, env_width))
             y = int(random.uniform(0, env_height))
@@ -35,6 +38,9 @@ class sPRM:
             # If the sample is not on an obstacle, add it to the vertex data structure
             if (not is_in_collision(self.workspace, x, y)):
                 self.vertex.append((x,y))
+                
+        end_time = time.perf_counter()
+        print("[PERF] Duration of config sample distribution: {:0.4f} seconds".format(end_time - start_time))
 
 
     # -------------------------------------------------------------------------
@@ -43,11 +49,13 @@ class sPRM:
         self.radius = radius
                 
         # Iterate over all valid samples and search for neighbors in a given radius
-        print("Searching for possible neighbors of each configuration sample...")
-        start = time.perf_counter()
+        print("[INF] Searching for possible neighbors of each configuration sample...")
         
         count = 0
         total = len(self.vertex)
+        
+        start = time.perf_counter()
+        
         for config in self.vertex:
             count += 1
             show_progress(int((count/total)*100))
@@ -55,15 +63,16 @@ class sPRM:
         print()
         
         end = time.perf_counter()
-        print("Finding neighbors took {:0.4f} seconds".format(end - start))
-        print("Number of nodes in graph: {}".format(len(self.graph.get_nodes())))
+        print("[PERF] Duration of finding neighbors: {:0.4f} seconds".format(end - start))
+        #print("Number of nodes in graph: {}".format(len(self.graph.get_nodes())))
         
         
     # -------------------------------------------------------------------------
     def find_path(self, c_init, c_goal):  
        
-        print("Initial config: {}".format(c_init))
-        print("Goal config: {}".format(c_goal))
+        print("[POS] sPRM path - c_init: {}, c_goal: {}".format(c_init, c_goal))
+        
+        start_time = time.perf_counter()
         
         # Add start and goal configurations to the vertex data structure
         self.vertex.append(c_init)
@@ -77,22 +86,25 @@ class sPRM:
         # Use the Dijkstra algorithm to find the shortest path from c_init to c_goal
         dijkstra = DijkstraSPF(self.graph, encode_config(c_init))
         
-        print("Computing the shortest path from {} to {} now...".format(
+        print("[INF] Computing the shortest path from {} to {} now...".format(
             encode_config(c_init), encode_config(c_goal)))
         path_found = False
         try:
             shortest_path = dijkstra.get_path(encode_config(c_goal))
-            show_info("Solution path has been found")
+            end_time = time.perf_counter()
+            print("[PERF] Duration of finding the shortest path: {:0.4f} seconds".format(end_time - start_time))
+        
+            show_info("[INF] Solution path has been found")
             path_found = True
         except:
-            show_warning("No path can be found from {} to {}!".format(c_init, c_goal))
+            show_warning("[WARN] No path can be found from {} to {}!".format(c_init, c_goal))
         
         solution_path = []
         if (path_found):
         
-            print("Shortest path: ", end="")
+            print("[POS] Shortest path: ", end="")
             print(" -> ".join(shortest_path))
-            print("Distance: {}".format(dijkstra.get_distance(encode_config(c_goal))))
+            print("[POS] Distance: {}".format(dijkstra.get_distance(encode_config(c_goal))))
         
             # Note: init and goal states are already included
             for config in shortest_path:

@@ -92,26 +92,31 @@ class RRT:
                 break
         print() # To clear the progress bar
         
-        stop_time = time.perf_counter()
-        print("Duration of RRT path search: {} seconds".format(stop_time-start_time))
+        end_time = time.perf_counter()
+        print("[PERF] Duration of RRT tree building: {:0.4f} seconds".format(end_time-start_time))
 
-        print("==> numbers of nodes added to graph: ", self.graph.get_number_of_nodes())
+        #print("==> numbers of nodes added to graph: ", self.graph.get_number_of_nodes())
         
         solution_path = []
         if self.goal_reached:
+            start_time = time.perf_counter()
+            
             dijkstra = DijkstraSPF(self.graph, encode_config(self.c_init))
             path = dijkstra.get_path(encode_config(self.c_goal))
         
-            print("Path: ", end="")
+            end_time = time.perf_counter()
+            print("[PERF] Duration of finding the shortest path: {:0.4f}".format(end_time - start_time))
+        
+            print("[POS] Path: ", end="")
             print(" -> ".join(path))
-            print("Distance: {}".format(dijkstra.get_distance(encode_config(self.c_goal))))
+            print("[POS] Distance: {}".format(dijkstra.get_distance(encode_config(self.c_goal))))
         
             for cfg in path:
                 solution_path.append(decode_config(cfg))     
 
-            show_info("Solution path has been found")
+            show_info("[INF] Solution path has been found")
         else:
-            print("==> NO PATH HAS BEEN FOUND!")
+            print("[WARN] NO PATH HAS BEEN FOUND!")
             show_warning("No path can be found from {} to {}!".format(self.c_init, self.c_goal))
             
             solution_path.append(self.c_init)

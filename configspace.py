@@ -50,7 +50,7 @@ class Configspace:
         self.canvas.create_line(self.off(c1[0]),self.off(c1[1]),self.off(c2[0]),self.off(c2[1]),fill='purple1')
 
 
-    def setIntialSolutionPath(self):
+    def set_initial_solution_path(self):
         resolution = max(abs(
             self.initConfig[0]-self.goalConfig[0]), abs(self.goalConfig[1]-self.goalConfig[1]))
 
