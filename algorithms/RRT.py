@@ -49,12 +49,6 @@ class RRT:
         
             #print("random sample: {} ==> x: {}, y: {}".format(n_iter, r_x, r_y))
             
-            # If the sample is on an obstacle, continue with the next random
-            # config sample
-            if (is_in_collision(self.workspace, r_x, r_y)):
-                #print("  --> skipping, sample has a collision!")
-                continue
-
             c_rand = (r_x, r_y)
         
             c_near = find_nearest_neighbor(c_rand, self.vertex)
