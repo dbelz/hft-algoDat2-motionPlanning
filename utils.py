@@ -5,10 +5,6 @@ import random
 
 
 # -------------------------------------------------------------------------    
-def setBackgroundColor(col_stat_lbl, color):
-    col_stat_lbl.config(bg=color)
-
-# -------------------------------------------------------------------------    
 def show_info(msg, debug=False):
     _show_message_dialog(msg, "INFO", debug)
     

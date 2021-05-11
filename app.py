@@ -6,7 +6,6 @@ from configspace import Configspace
 from controller import  Controller
 from PIL import ImageTk, Image
 import os
-from utils import setBackgroundColor
 
 """
 --> https://pep8.org/
@@ -65,8 +64,8 @@ def demo():
     def callback(event):
         print ("Mouse position: ({}, {})".format(event.x, event.y))
         controller.drawMouseOffSet(event.x, event.y)
-        if controller.isInCollision(event.x, event.y): setBackgroundColor(col_stat_lbl,"red")
-        else: setBackgroundColor(col_stat_lbl,"green")
+        if controller.isInCollision(event.x, event.y): show_collision_status(col_stat_lbl, True)
+        else: show_collision_status(col_stat_lbl, False)
 
     workspace.label.bind("<Button-1>", callback)
 
@@ -203,8 +202,8 @@ def demo():
         if controller.isAllInitialized():
             controller.setSolutionPathOnCurrentPos(int(val))
             controller.drawCurrentPos()
-            if controller.isInCollision(): setBackgroundColor(col_stat_lbl,"red")
-            else: setBackgroundColor(col_stat_lbl,"green")
+            if controller.isInCollision(): show_collision_status(col_stat_lbl, True)
+            else: show_collision_status(col_stat_lbl, False)
 
     slider = Scale(page1, from_=0, to=200, orient=HORIZONTAL, command=moveRobotOnPath)
     slider.config(length=400)
@@ -223,6 +222,11 @@ def demo():
     # -------------------------------------------------------------------------
     root.mainloop()
 
+def show_collision_status(target, is_collision):
+    color = 'green'
+    if (is_collision):
+        color = 'red'
+    target.config(bg=color)
 
 if __name__ == "__main__":
     demo()
