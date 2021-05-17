@@ -19,9 +19,6 @@ class sPRM:
     # -------------------------------------------------------------------------
     def distribute_configuration_samples(self, number):
         
-        
-        self.nr_of_samples = number
-        
         env_width = self.workspace.envArray.shape[1] - 1
         env_height = self.workspace.envArray.shape[0] - 1
         #print("env_width: {}, env_height: {}".format(env_width, env_height))
@@ -29,7 +26,8 @@ class sPRM:
         print("[INF] Creating random configuration samples...")
         start_time = time.perf_counter()
         
-        for _ in range(number):
+        samples_in_cfree = 0
+        while samples_in_cfree <= number:
             x = int(random.uniform(0, env_width))
             y = int(random.uniform(0, env_height))
         
@@ -37,11 +35,53 @@ class sPRM:
             
             # If the sample is not on an obstacle, add it to the vertex data structure
             if (not is_in_collision(self.workspace, x, y)):
+                samples_in_cfree += 1
                 self.vertex.append((x,y))
                 
         end_time = time.perf_counter()
+        print("[DBG] Number of configuration samples in vertex: ", len(self.vertex))
         print("[PERF] Duration of config sample distribution: {:0.4f} seconds".format(end_time - start_time))
 
+
+    # -------------------------------------------------------------------------
+    def gaussian_sampling_2(self, number):
+        
+        env_width = self.workspace.envArray.shape[1] - 1
+        env_height = self.workspace.envArray.shape[0] - 1
+        #print("env_width: {}, env_height: {}".format(env_width, env_height))
+        
+        print("[INF] Gaussian sampling (improved version)...")
+        start_time = time.perf_counter()
+        
+        gaussian_samples = 0
+        while gaussian_samples <= number:
+            x1 = int(random.uniform(0, env_width))
+            y1 = int(random.uniform(0, env_height))
+            c1 = (x1,y1)
+        
+            # We choose the distance automatically depending on the shape of the robot.
+            # Refer to section 5.2 of http://www.cs.uu.nl/research/techreps/repo/CS-2001/2001-36.pdf
+            dist = random.gauss(0, max(self.workspace.robotArray.shape[0],
+                                       self.workspace.robotArray.shape[1]))
+            
+            x2 = int(x1 + dist)
+            y2 = int(y1 + dist)
+            c2 = (x2,y2)
+            
+            c1_in_collision = is_in_collision(self.workspace, x1, y1)
+            c2_in_collision = is_in_collision(self.workspace, x2, y2)
+            
+            if (c1_in_collision and not c2_in_collision):
+                gaussian_samples += 1
+                self.vertex.append(c1)
+            elif (c2_in_collision and not c1_in_collision):
+                gaussian_samples += 1
+                self.vertex.append(c2)
+            
+        end_time = time.perf_counter()
+        print("[DBG] Number of configuration samples in vertex: ", len(self.vertex))
+        print("[PERF] Duration auf Gaussian sampling: {:0.4f} seconds".format(end_time - start_time))
+        
 
     # -------------------------------------------------------------------------
     def build_neighbor_graph(self, radius):

@@ -1,5 +1,6 @@
 import sys
 import numpy as np
+import random
 from tkinter import ttk, Canvas, NW
 from PIL import Image, ImageTk, ImageColor
 from pprint import pprint as pp
@@ -47,3 +48,12 @@ np.set_printoptions(suppress=True,linewidth=np.nan,threshold=sys.maxsize)
 
 # Image.fromarray(arr.astype(np.uint8)).show(title="Mask test")
 
+x1 = int(random.uniform(0, 1500))
+y1 = int(random.uniform(0, 1000))
+
+dist = random.gauss(0, 40)
+
+x2 = int(x1 + dist)
+y2 = int(y1 + dist)
+
+print("1({},{}), 2({},{})".format(x1, y1, x2, y2))

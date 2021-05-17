@@ -144,7 +144,10 @@ class Workspace:
     def construct_roadmap_with_sPRM(self, radius, samples, workspace, configspace):
         
         self.sprm = sPRM(workspace, configspace)
-        self.sprm.distribute_configuration_samples(samples)
+        # TODO: Maybe give an option to set this in the GUI
+        # We just use 50% uniform sampling and 50% gaussian sampling
+        self.sprm.distribute_configuration_samples(samples * 0.5)
+        self.sprm.gaussian_sampling_2(samples * 0.5)
         self.sprm.build_neighbor_graph(radius)
         
     # -------------------------------------------------------------------------
