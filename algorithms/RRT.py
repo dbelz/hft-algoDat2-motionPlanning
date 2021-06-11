@@ -18,10 +18,6 @@ class RRT:
         self.c_init = c_init
         self.c_goal = c_goal
         
-        # TODO: Replace by the following code when the UI has been refactored
-        #self.c_init = configspace.initConfig
-        #self.c_goal = configspace.goalConfig
-        
         self.vertex.append(c_init)
         # TODO: When also appending g_goal we might run into the prob that
         #       c_goal is found as nearest neighbor. Correct?
@@ -108,7 +104,7 @@ class RRT:
             for cfg in path:
                 solution_path.append(decode_config(cfg))     
 
-            show_info("[INF] Solution path has been found")
+            show_info("Solution path has been found")
         else:
             print("[WARN] NO PATH HAS BEEN FOUND!")
             show_warning("No path can be found from {} to {}!".format(self.c_init, self.c_goal))
